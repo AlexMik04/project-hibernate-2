@@ -1,4 +1,4 @@
-package org.quest;
+package main;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

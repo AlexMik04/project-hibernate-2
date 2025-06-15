@@ -1,4 +1,4 @@
-package org.quest;
+package main;
 
 /**
  * Hello world!
