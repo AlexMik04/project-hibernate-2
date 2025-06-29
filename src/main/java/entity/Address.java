@@ -3,17 +3,15 @@ package entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "address")
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id", nullable = false)
-    private Short id;
+    @Column(name = "address_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @Column(name = "address", nullable = false, length = 50)
     private String address;
@@ -24,7 +22,7 @@ public class Address {
     @Column(name = "district", nullable = false, length = 20)
     private String district;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
@@ -54,17 +52,17 @@ public class Address {
     }
 
     public Address(String address, String district, City city, String phone) {
-        this.address = address;
-        this.district = district;
-        this.city = city;
-        this.phone = phone;
+        this.address = Objects.requireNonNull(address, "Address can not be null");
+        this.district = Objects.requireNonNull(district, "District can not be null");
+        this.city = Objects.requireNonNull(city, "City can not be null");
+        this.phone = Objects.requireNonNull(phone, "Phone can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -141,8 +139,9 @@ public class Address {
     }
 
     public void addStaff(Staff s) {
+        Objects.requireNonNull(s, "Staff can not be null");
+
         staff.add(s);
-        s.setAddress(this);
     }
 
     public Set<Customer> getCustomers() {
@@ -154,19 +153,8 @@ public class Address {
     }
 
     public void addCustomer(Customer customer) {
+        Objects.requireNonNull(customer, "Customer can not be null");
+
         customers.add(customer);
-        customer.setAddress(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Address a)) return false;
-        return id != null && id.equals(a.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

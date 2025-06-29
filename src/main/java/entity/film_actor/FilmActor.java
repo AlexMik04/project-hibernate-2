@@ -11,22 +11,30 @@ import java.util.Objects;
 @Table(schema = "movie", name = "film_actor")
 public class FilmActor {
     @EmbeddedId
-    private FilmActorId id;
+    private FilmActorId id = new FilmActorId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("filmId")
-    @JoinColumn(name = "film_id")
+    @JoinColumn(name = "film_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
     private Film film;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("actorId")
-    @JoinColumn(name = "actor_id")
+    @JoinColumn(name = "actor_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
     private Actor actor;
 
     @Column(name = "last_update", nullable = false, insertable = false, updatable = false)
     private LocalDateTime lastUpdate;
 
 
+
+    public FilmActor() {
+    }
+
+    public FilmActor(Film film, Actor actor) {
+        this.film = Objects.requireNonNull(film, "Film can not be null");
+        this.actor = Objects.requireNonNull(actor, "Actor can not be null");
+    }
 
     public FilmActorId getId() {
         return id;
@@ -58,17 +66,5 @@ public class FilmActor {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FilmActor filmActor)) return false;
-        return id != null && id.equals(filmActor.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

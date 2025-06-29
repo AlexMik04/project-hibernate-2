@@ -1,19 +1,39 @@
 package entity;
 
+import dto.CustomerInfoDTO;
 import jakarta.persistence.*;
+import util.SqlQueries;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+@NamedNativeQuery(
+        name = "CustomerInfoDTOMapping",
+        query = SqlQueries.FILM_INFO_DTO_SQL,
+        resultSetMapping = "RentalInfoDTOMapping"
+)
+@SqlResultSetMapping(
+        name = "CustomerInfoDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = CustomerInfoDTO.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Integer.class),
+                        @ColumnResult(name = "first_name", type = String.class),
+                        @ColumnResult(name = "last_name", type = String.class),
+                        @ColumnResult(name = "email", type = String.class),
+                        @ColumnResult(name = "active", type = Boolean.class),
+                        @ColumnResult(name = "city", type = String.class),
+                        @ColumnResult(name = "country", type = String.class),
+                }
+        )
+)
 @Entity
 @Table(schema = "movie", name = "customer")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_id", nullable = false)
-    private Short id;
+    @Column(name = "customer_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id", nullable = false)
@@ -28,7 +48,7 @@ public class Customer {
     @Column(name = "email", length = 50)
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
@@ -36,7 +56,7 @@ public class Customer {
     private Boolean active = true;
 
     @Column(name = "create_date", nullable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime createDate = LocalDateTime.now();
 
     @Column(name = "last_update", nullable = false, insertable = false, updatable = false)
     private LocalDateTime lastUpdate;
@@ -54,19 +74,18 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Store store, String firstName, String lastName, Address address, LocalDateTime createDate) {
-        this.store = store;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.createDate = createDate;
+    public Customer(Store store, String firstName, String lastName, Address address) {
+        this.store = Objects.requireNonNull(store, "Store can not be null");
+        this.firstName = Objects.requireNonNull(firstName, "FirstName can not be null");
+        this.lastName = Objects.requireNonNull(lastName, "LastName can not be null");
+        this.address = Objects.requireNonNull(address, "Address can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -143,8 +162,9 @@ public class Customer {
     }
 
     public void addPayment(Payment payment) {
+        Objects.requireNonNull(payment, "Payment can not be null");
+
         payments.add(payment);
-        payment.setCustomer(this);
     }
 
     public Set<Rental> getRentals() {
@@ -156,19 +176,8 @@ public class Customer {
     }
 
     public void addRental(Rental rental) {
+        Objects.requireNonNull(rental, "Rental can not be null");
+
         rentals.add(rental);
-        rental.setCustomer(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Customer c)) return false;
-        return id != null && id.equals(c.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

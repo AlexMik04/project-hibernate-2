@@ -11,8 +11,8 @@ import java.util.Objects;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_id", nullable = false)
-    private Short id;
+    @Column(name = "payment_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
@@ -30,7 +30,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(name = "payment_date", nullable = false)
-    private LocalDateTime paymentDate;
+    private LocalDateTime paymentDate = LocalDateTime.now();
 
     @Column(name = "last_update", nullable = false, insertable = false, updatable = false)
     private LocalDateTime lastUpdate;
@@ -40,18 +40,17 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Customer customer, Staff staff, BigDecimal amount, LocalDateTime paymentDate) {
-        this.customer = customer;
-        this.staff = staff;
-        this.amount = amount;
-        this.paymentDate = paymentDate;
+    public Payment(Customer customer, Staff staff, BigDecimal amount) {
+        this.customer = Objects.requireNonNull(customer, "Customer can not be null");
+        this.staff = Objects.requireNonNull(staff, "Staff can not be null");
+        this.amount = Objects.requireNonNull(amount, "Amount can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -101,17 +100,5 @@ public class Payment {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Payment payment)) return false;
-        return id != null && id.equals(payment.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

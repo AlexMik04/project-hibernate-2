@@ -4,16 +4,14 @@ import entity.film_category.FilmCategory;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "category")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id", nullable = false)
+    @Column(name = "category_id", nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private Short id;
 
     @Column(name = "name", nullable = false, length = 25)
@@ -33,7 +31,7 @@ public class Category {
     }
 
     public Category(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "Name can not be null");
     }
 
     public Short getId() {
@@ -69,19 +67,8 @@ public class Category {
     }
 
     public void addFilmCategory(FilmCategory filmCategory) {
+        Objects.requireNonNull(filmCategory, "FilmCategory can not be null");
+
         filmCategories.add(filmCategory);
-        filmCategory.setCategory(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Category category)) return false;
-        return id != null && id.equals(category.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

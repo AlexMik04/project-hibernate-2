@@ -4,17 +4,15 @@ import entity.film_actor.FilmActor;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "actor")
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "actor_id", nullable = false)
-    private Short id;
+    @Column(name = "actor_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @Column(name = "first_name", nullable = false, length = 45)
     private String firstName;
@@ -36,15 +34,15 @@ public class Actor {
     }
 
     public Actor(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = Objects.requireNonNull(firstName, "FirstName can not be null");
+        this.lastName = Objects.requireNonNull(lastName, "LastName can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -72,9 +70,10 @@ public class Actor {
         this.filmActors = filmActors;
     }
 
-    public void addFilmActor(FilmActor filmActor) {
+    public void addReplaceFilmActor(FilmActor filmActor) {
+        Objects.requireNonNull(filmActor, "FilmActor can not be null");
+
         filmActors.add(filmActor);
-        filmActor.setActor(this);
     }
 
     public LocalDateTime getLastUpdate() {
@@ -83,17 +82,5 @@ public class Actor {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Actor actor)) return false;
-        return id != null && id.equals(actor.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

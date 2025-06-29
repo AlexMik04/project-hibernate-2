@@ -11,22 +11,30 @@ import java.util.Objects;
 @Table(name = "film_category", schema = "movie")
 public class FilmCategory {
     @EmbeddedId
-    private FilmCategoryId id;
+    private FilmCategoryId id = new FilmCategoryId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("filmId")
-    @JoinColumn(name = "film_id")
+    @JoinColumn(name = "film_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
     private Film film;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("categoryId")
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private Category category;
 
     @Column(name = "last_update", nullable = false, insertable = false, updatable = false)
     private LocalDateTime lastUpdate;
 
 
+
+    public FilmCategory() {
+    }
+
+    public FilmCategory(Film film, Category category) {
+        this.film = Objects.requireNonNull(film, "Film can not be null");
+        this.category = Objects.requireNonNull(category, "Category can not be null");
+    }
 
     public FilmCategoryId getId() {
         return id;
@@ -58,17 +66,5 @@ public class FilmCategory {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FilmCategory filmCategory)) return false;
-        return id != null && id.equals(filmCategory.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

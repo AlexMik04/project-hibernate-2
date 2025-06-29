@@ -23,7 +23,7 @@ public class FilmText {
     }
 
     public FilmText(String title) {
-        this.title = title;
+        this.title = Objects.requireNonNull(title, "Title can not be null");
     }
 
     public Short getId() {
@@ -48,17 +48,5 @@ public class FilmText {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FilmText filmText)) return false;
-        return id != null && id.equals(filmText.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

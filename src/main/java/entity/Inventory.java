@@ -4,16 +4,14 @@ import entity.film.Film;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "inventory")
 public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "inventory_id", nullable = false)
+    @Column(name = "inventory_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,8 +36,8 @@ public class Inventory {
     }
 
     public Inventory(Film film, Store store) {
-        this.film = film;
-        this.store = store;
+        this.film = Objects.requireNonNull(film, "Film can not be null");
+        this.store = Objects.requireNonNull(store, "Store can not be null");
     }
 
     public Integer getId() {
@@ -83,19 +81,8 @@ public class Inventory {
     }
 
     public void addRental(Rental rental) {
+        Objects.requireNonNull(rental, "Rental can not be null");
+
         rentals.add(rental);
-        rental.setInventory(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Inventory inventory)) return false;
-        return id != null && id.equals(inventory.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

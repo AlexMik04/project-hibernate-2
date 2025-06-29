@@ -1,26 +1,50 @@
 package entity.film;
 
+import dto.FilmInfoDTO;
 import entity.Inventory;
 import entity.Language;
-import entity.converter.RatingConverter;
-import entity.converter.SpecialFeaturesConverter;
+import entity.film.converter.RatingConverter;
+import entity.film.converter.SpecialFeaturesConverter;
+import entity.film.converter.YearConverter;
 import entity.film_actor.FilmActor;
 import entity.film_category.FilmCategory;
 import jakarta.persistence.*;
+import util.SqlQueries;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.time.Year;
+import java.util.*;
 
+@NamedNativeQuery(
+        name = "FilmInfoDTOMapping",
+        query = SqlQueries.FILM_INFO_DTO_SQL,
+        resultSetMapping = "RentalInfoDTOMapping"
+)
+@SqlResultSetMapping(
+        name = "FilmInfoDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = FilmInfoDTO.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Integer.class),
+                        @ColumnResult(name = "title", type = String.class),
+                        @ColumnResult(name = "release_year", type = Year.class),
+                        @ColumnResult(name = "description", type = String.class),
+                        @ColumnResult(name = "rating", type = Rating.class),
+                        @ColumnResult(name = "language", type = Language.class),
+                        @ColumnResult(name = "category", type = String.class),
+                        @ColumnResult(name = "first_name", type = String.class),
+                        @ColumnResult(name = "last_name", type = String.class),
+                }
+        )
+)
 @Entity
 @Table(schema = "movie", name = "film")
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "film_id", nullable = false)
-    private Short id;
+    @Column(name = "film_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @Column(name = "title", nullable = false, length = 128)
     private String title;
@@ -28,8 +52,9 @@ public class Film {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "release_year")
-    private Short releaseYear;
+    @Convert(converter = YearConverter.class)
+    @Column(name = "release_year", columnDefinition = "YEAR")
+    private Year releaseYear;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id", nullable = false)
@@ -39,11 +64,14 @@ public class Film {
     @JoinColumn(name = "original_language_id")
     private Language originalLanguage;
 
+    @Column(name = "rental_duration", nullable = false, columnDefinition = "TINYINT UNSIGNED")
+    private Short rentalDuration = 3;
+
     @Column(name = "rental_rate", nullable = false, precision = 4, scale = 2)
     private BigDecimal rentalRate = BigDecimal.valueOf(4.99);
 
-    @Column(name = "length")
-    private Short length;
+    @Column(name = "length", columnDefinition = "SMALLINT UNSIGNED")
+    private Integer length;
 
     @Column(name = "replacement_cost", nullable = false, precision = 5, scale = 2)
     private BigDecimal replacementCost = BigDecimal.valueOf(19.99);
@@ -76,15 +104,15 @@ public class Film {
     }
 
     public Film(String title, Language language) {
-        this.title = title;
-        this.language = language;
+        this.title = Objects.requireNonNull(title, "Title can not be null");
+        this.language = Objects.requireNonNull(language, "Language can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -104,11 +132,11 @@ public class Film {
         this.description = description;
     }
 
-    public Short getReleaseYear() {
+    public Year getReleaseYear() {
         return releaseYear;
     }
 
-    public void setReleaseYear(Short releaseYear) {
+    public void setReleaseYear(Year releaseYear) {
         this.releaseYear = releaseYear;
     }
 
@@ -128,6 +156,14 @@ public class Film {
         this.originalLanguage = originalLanguage;
     }
 
+    public Short getRentalDuration() {
+        return rentalDuration;
+    }
+
+    public void setRentalDuration(Short rentalDuration) {
+        this.rentalDuration = rentalDuration;
+    }
+
     public BigDecimal getRentalRate() {
         return rentalRate;
     }
@@ -136,11 +172,11 @@ public class Film {
         this.rentalRate = rentalRate;
     }
 
-    public Short getLength() {
+    public Integer getLength() {
         return length;
     }
 
-    public void setLength(Short length) {
+    public void setLength(Integer length) {
         this.length = length;
     }
 
@@ -185,8 +221,9 @@ public class Film {
     }
 
     public void addFilmCategory(FilmCategory filmCategory) {
+        Objects.requireNonNull(filmCategory, "FilmCategory can not be null");
+
         filmCategories.add(filmCategory);
-        filmCategory.setFilm(this);
     }
 
     public Set<FilmActor> getFilmActors() {
@@ -198,8 +235,9 @@ public class Film {
     }
 
     public void addFilmActor(FilmActor filmActor) {
+        Objects.requireNonNull(filmActor, "FilmActor can not be null");
+
         filmActors.add(filmActor);
-        filmActor.setFilm(this);
     }
 
     public Set<Inventory> getInventories() {
@@ -211,19 +249,8 @@ public class Film {
     }
 
     public void addInventory(Inventory inventory) {
+        Objects.requireNonNull(inventory, "Inventory can not be null");
+
         inventories.add(inventory);
-        inventory.setFilm(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Film film)) return false;
-        return id != null && id.equals(film.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

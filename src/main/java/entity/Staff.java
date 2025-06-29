@@ -3,16 +3,14 @@ package entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "staff")
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "staff_id", nullable = false)
+    @Column(name = "staff_id", nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private Short id;
 
     @Column(name = "first_name", nullable = false, length = 45)
@@ -62,11 +60,11 @@ public class Staff {
     }
 
     public Staff(String firstName, String lastName, Address address, Store store, String userName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.store = store;
-        this.userName = userName;
+        this.firstName = Objects.requireNonNull(firstName, "FirstName can not be null");
+        this.lastName = Objects.requireNonNull(lastName, "LastName can not be null");
+        this.address = Objects.requireNonNull(address, "Address can not be null");
+        this.store = Objects.requireNonNull(store, "Store can not be null");
+        this.userName = Objects.requireNonNull(userName, "UserName can not be null");
     }
 
     public Short getId() {
@@ -166,8 +164,9 @@ public class Staff {
     }
 
     public void addPayment(Payment payment) {
+        Objects.requireNonNull(payment, "Payment can not be null");
+
         payments.add(payment);
-        payment.setStaff(this);
     }
 
     public Set<Rental> getRentals() {
@@ -179,19 +178,8 @@ public class Staff {
     }
 
     public void addRental(Rental rental) {
+        Objects.requireNonNull(rental, "Rental can not be null");
+
         rentals.add(rental);
-        rental.setStaff(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Staff s)) return false;
-        return id != null && id.equals(s.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

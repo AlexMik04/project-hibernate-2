@@ -4,16 +4,14 @@ import entity.film.Film;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "language")
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "language_id", nullable = false)
+    @Column(name = "language_id", nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private Short id;
 
     @Column(name = "name", nullable = false, length = 20)
@@ -36,7 +34,7 @@ public class Language {
     }
 
     public Language(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "Name can not be null");
     }
 
     public Short getId() {
@@ -72,8 +70,9 @@ public class Language {
     }
 
     public void addLanguageFilm(Film film) {
+        Objects.requireNonNull(film, "Film can not be null");
+
         languageFilms.add(film);
-        film.setLanguage(this);
     }
 
     public Set<Film> getOriginalLanguageFilms() {
@@ -85,19 +84,8 @@ public class Language {
     }
 
     public void addOriginalLanguageFilm(Film film) {
+        Objects.requireNonNull(film, "Film can not be null");
+
         originalLanguageFilms.add(film);
-        film.setOriginalLanguage(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Language language)) return false;
-        return id != null && id.equals(language.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

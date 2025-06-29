@@ -3,23 +3,21 @@ package entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "store")
 public class Store {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "store_id", nullable = false)
+    @Column(name = "store_id", nullable = false, columnDefinition = "TINYINT UNSIGNED")
     private Short id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_staff_id", nullable = false, referencedColumnName = "staff_id", unique = true)
     private Staff manager;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
@@ -44,7 +42,7 @@ public class Store {
 
     public Store(Staff manager, Address address) {
         this.manager = manager;
-        this.address = address;
+        this.address = Objects.requireNonNull(address, "Address can not be null");
     }
 
     public Short getId() {
@@ -75,6 +73,10 @@ public class Store {
         return lastUpdate;
     }
 
+    public void setLastUpdate(LocalDateTime lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
     public Set<Staff> getStaff() {
         return staff;
     }
@@ -84,8 +86,9 @@ public class Store {
     }
 
     public void addStaff(Staff s) {
+        Objects.requireNonNull(s, "Staff can not be null");
+
         staff.add(s);
-        s.setStore(this);
     }
 
     public Set<Inventory> getInventories() {
@@ -97,8 +100,9 @@ public class Store {
     }
 
     public void addInventory(Inventory inventory) {
+        Objects.requireNonNull(inventory, "Inventory can not be null");
+
         inventories.add(inventory);
-        inventory.setStore(this);
     }
 
     public Set<Customer> getCustomers() {
@@ -110,19 +114,8 @@ public class Store {
     }
 
     public void addCustomer(Customer customer) {
+        Objects.requireNonNull(customer, "Customer can not be null");
+
         customers.add(customer);
-        customer.setStore(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Store store)) return false;
-        return id != null && id.equals(store.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

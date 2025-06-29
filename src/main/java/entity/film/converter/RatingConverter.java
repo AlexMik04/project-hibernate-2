@@ -1,4 +1,4 @@
-package entity.converter;
+package entity.film.converter;
 
 import entity.film.Rating;
 import jakarta.persistence.AttributeConverter;

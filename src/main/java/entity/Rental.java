@@ -1,12 +1,34 @@
 package entity;
 
+import dto.RentalInfoDTO;
 import jakarta.persistence.*;
+import util.SqlQueries;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+@NamedNativeQuery(
+        name = "RentalInfoDTOMapping",
+        query = SqlQueries.RENTAL_INFO_DTO_SQL,
+        resultSetMapping = "RentalInfoDTOMapping"
+)
+@SqlResultSetMapping(
+        name = "RentalInfoDTOMapping",
+        classes = @ConstructorResult(
+                targetClass = RentalInfoDTO.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Integer.class),
+                        @ColumnResult(name = "customer_first_name", type = String.class),
+                        @ColumnResult(name = "customer_last_name", type = String.class),
+                        @ColumnResult(name = "film_title", type = String.class),
+                        @ColumnResult(name = "return_date", type = LocalDateTime.class),
+                        @ColumnResult(name = "staff_first_name", type = String.class),
+                        @ColumnResult(name = "staff_last_name", type = String.class),
+                        @ColumnResult(name = "city", type = String.class),
+                        @ColumnResult(name = "country", type = String.class)
+                }
+        )
+)
 @Entity
 @Table(schema = "movie", name = "rental")
 public class Rental {
@@ -16,7 +38,7 @@ public class Rental {
     private Integer id;
 
     @Column(name = "rental_date", nullable = false)
-    private LocalDateTime rentalDate;
+    private LocalDateTime rentalDate = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_id", nullable = false)
@@ -46,11 +68,10 @@ public class Rental {
     public Rental() {
     }
 
-    public Rental(LocalDateTime rentalDate, Inventory inventory, Customer customer, Staff staff) {
-        this.rentalDate = rentalDate;
-        this.inventory = inventory;
-        this.customer = customer;
-        this.staff = staff;
+    public Rental(Inventory inventory, Customer customer, Staff staff) {
+        this.inventory = Objects.requireNonNull(inventory, "Inventory can not be null");
+        this.customer = Objects.requireNonNull(customer, "Customer can not be null");
+        this.staff = Objects.requireNonNull(staff, "Staff can not be null");
     }
 
     public Integer getId() {
@@ -118,19 +139,8 @@ public class Rental {
     }
 
     public void addPayment(Payment payment) {
+        Objects.requireNonNull(payment, "Payment can not be null");
+
         payments.add(payment);
-        payment.setRental(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Rental rental)) return false;
-        return id != null && id.equals(rental.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

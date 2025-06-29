@@ -2,22 +2,20 @@ package entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "city")
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "city_id", nullable = false)
-    private Short id;
+    @Column(name = "city_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @Column(name = "city", nullable = false, length = 50)
     private String city;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
@@ -32,15 +30,15 @@ public class City {
     }
 
     public City(String city, Country country) {
-        this.city = city;
-        this.country = country;
+        this.city = Objects.requireNonNull(city, "City can not be null");
+        this.country = Objects.requireNonNull(country, "Country can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -69,19 +67,8 @@ public class City {
     }
 
     public void addAddress(Address address) {
+        Objects.requireNonNull(address, "Address can not be null");
+
         addresses.add(address);
-        address.setCity(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof City c)) return false;
-        return id != null && id.equals(c.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

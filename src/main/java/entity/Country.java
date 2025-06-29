@@ -3,17 +3,15 @@ package entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(schema = "movie", name = "country")
 public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "country_id", nullable = false)
-    private Short id;
+    @Column(name = "country_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
+    private Integer id;
 
     @Column(name = "country", nullable = false, length = 50)
     private String country;
@@ -32,14 +30,14 @@ public class Country {
     }
 
     public Country(String country) {
-        this.country = country;
+        this.country = Objects.requireNonNull(country, "Country can not be null");
     }
 
-    public Short getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -68,19 +66,8 @@ public class Country {
     }
 
     public void addCity(City city) {
+        Objects.requireNonNull(city, "City can not be null");
+
         cities.add(city);
-        city.setCountry(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Country c)) return false;
-        return id != null && id.equals(c.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }
