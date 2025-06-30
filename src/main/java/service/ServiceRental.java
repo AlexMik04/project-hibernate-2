@@ -1,6 +1,7 @@
 package service;
 
 import entity.*;
+import factory.FactoryDAO;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,12 +29,14 @@ public class ServiceRental {
     public ServiceRental(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        this.customerDAO = new CustomerDAO();
-        this.inventoryDAO = new InventoryDAO();
-        this.paymentDAO = new PaymentDAO();
-        this.rentalDAO = new RentalDAO();
-        this.staffDAO = new StaffDAO();
-        this.storeDAO = new StoreDAO();
+        FactoryDAO factoryDAO = FactoryDAO.getInstance();
+
+        this.customerDAO = factoryDAO.getCustomerDAO();
+        this.inventoryDAO = factoryDAO.getInventoryDAO();
+        this.paymentDAO = factoryDAO.getPaymentDAO();
+        this.rentalDAO = factoryDAO.getRentalDAO();
+        this.staffDAO = factoryDAO.getStaffDAO();
+        this.storeDAO = factoryDAO.getStoreDAO();
     }
 
     public Rental getByIdFromDB(Integer id) {
@@ -49,7 +52,8 @@ public class ServiceRental {
             Transaction transaction = session.beginTransaction();
             try {
                 if (rental.getRentalDate() != null) {
-                    throw new IllegalStateException("Rental return " + rental.getRentalDate());
+                    logger.warn("The Rental has already been returned: " + rental.getRentalDate());
+                    throw new IllegalStateException("The Rental has already been returned: " + rental.getRentalDate());
                 }
                 rental.setReturnDate(LocalDateTime.now());
 

@@ -6,6 +6,7 @@ import entity.film.Film;
 import entity.film.Rating;
 import entity.film_actor.FilmActor;
 import entity.film_category.FilmCategory;
+import factory.ServiceFactory;
 import service.*;
 
 import java.time.Year;
@@ -37,7 +38,7 @@ public class Main {
 
             Main main = new Main(sf);
 
-//            main.createAndSaveCustomerToDB();
+            main.createAndSaveCustomerToDB();
 //            main.createAndSaveFilmToDB();
 //            main.createAndSaveRentalToDB();
 //            main.customerReturnRental();

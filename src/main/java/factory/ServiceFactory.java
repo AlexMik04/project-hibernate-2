@@ -1,6 +1,7 @@
-package service;
+package factory;
 
 import org.hibernate.SessionFactory;
+import service.*;
 
 import java.util.Objects;
 

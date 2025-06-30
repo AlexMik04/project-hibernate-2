@@ -1,6 +1,7 @@
 package service;
 
 import entity.Inventory;
+import factory.FactoryDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import repository.*;
@@ -13,11 +14,11 @@ public class ServiceInventory {
     private final InventoryDAO inventoryDAO;
 
     public ServiceInventory(SessionFactory sessionFactory) {
-        Objects.requireNonNull(sessionFactory, "SessionFactory cannot be null");
+        this.sessionFactory =  Objects.requireNonNull(sessionFactory, "SessionFactory cannot be null");
 
-        this.sessionFactory = sessionFactory;
+        FactoryDAO factoryDAO = FactoryDAO.getInstance();
 
-        this.inventoryDAO = new InventoryDAO();
+        this.inventoryDAO = factoryDAO.getInventoryDAO();
     }
 
     public Inventory getByIdFromDB(Integer id) {

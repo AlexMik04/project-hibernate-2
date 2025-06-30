@@ -1,6 +1,7 @@
 package service;
 
 import entity.Store;
+import factory.FactoryDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import repository.*;
@@ -13,11 +14,11 @@ public class ServiceStore {
     private final StoreDAO storeDAO;
 
     public ServiceStore(SessionFactory sessionFactory) {
-        Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
+        this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        this.sessionFactory = sessionFactory;
+        FactoryDAO factoryDAO = FactoryDAO.getInstance();
 
-        this.storeDAO = new StoreDAO();
+        this.storeDAO = factoryDAO.getStoreDAO();
     }
 
     public Store getByIdFromDB(Short id) {

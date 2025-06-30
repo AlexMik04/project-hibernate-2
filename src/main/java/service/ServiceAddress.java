@@ -3,6 +3,7 @@ package service;
 import entity.Address;
 import entity.City;
 import entity.Country;
+import factory.FactoryDAO;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,9 +28,11 @@ public class ServiceAddress {
     public ServiceAddress(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        this.addressDAO = new AddressDAO();
-        this.cityDAO = new CityDAO();
-        this.countryDAO = new CountryDAO();
+        FactoryDAO factoryDAO = FactoryDAO.getInstance();
+
+        this.addressDAO = factoryDAO.getAddressDAO();
+        this.cityDAO = factoryDAO.getCityDAO();
+        this.countryDAO = factoryDAO.getCountryDAO();
     }
 
     public Address getByIdFromDB(Integer id) {
