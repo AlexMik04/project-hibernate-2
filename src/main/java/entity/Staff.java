@@ -63,7 +63,7 @@ public class Staff {
         this.firstName = Objects.requireNonNull(firstName, "FirstName can not be null");
         this.lastName = Objects.requireNonNull(lastName, "LastName can not be null");
         this.address = Objects.requireNonNull(address, "Address can not be null");
-        this.store = Objects.requireNonNull(store, "Store can not be null");
+        this.store = store;
         this.userName = Objects.requireNonNull(userName, "UserName can not be null");
     }
 

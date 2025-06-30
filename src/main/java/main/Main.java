@@ -41,7 +41,7 @@ public class Main {
 //            main.createAndSaveCustomerToDB();
 //            main.createAndSaveFilmToDB();
 //            main.createAndSaveRentalToDB();
-            main.customerReturnRental();
+//            main.customerReturnRental();
         }
     }
 
@@ -57,16 +57,19 @@ public class Main {
 
     private void createAndSaveRentalToDB() {
         Rental testRental = createTestRental();
+        Objects.requireNonNull(testRental, "Test Rental cannot be null");
         serviceRental.saveRentalInDB(testRental);
     }
 
     private void customerReturnRental() {
-        Rental testRental = serviceRental.getByIdFromDB(16050);
+        Rental testRental = serviceRental.getByIdFromDB(14098);
+        Objects.requireNonNull(testRental, "Test Rental cannot be null");
         serviceRental.returnRental(testRental);
     }
 
     private Customer createTestCustomer() {
         Store store = serviceStore.getByIdFromDB((short) 1);
+        Objects.requireNonNull(store, "Test Store cannot be null");
 
         String firstName = "First_TEST";
         String lastName = "Last_TEST";
