@@ -5,8 +5,8 @@ import service.*;
 
 import java.util.Objects;
 
-public class ServiceFactory {
-    private static ServiceFactory instance;
+public class FactoryService {
+    private static FactoryService instance;
 
     private final SessionFactory sessionFactory;
 
@@ -16,15 +16,14 @@ public class ServiceFactory {
     private ServiceRental serviceRental;
     private ServiceStaff serviceStaff;
     private ServiceStore serviceStore;
-    private ServiceAddress serviceAddress;
 
-    private ServiceFactory(SessionFactory sessionFactory) {
+    private FactoryService(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory cannot be null");
     }
 
-    public static ServiceFactory getInstance(SessionFactory sessionFactory) {
+    public static FactoryService getInstance(SessionFactory sessionFactory) {
         if (instance == null) {
-            instance = new ServiceFactory(sessionFactory);
+            instance = new FactoryService(sessionFactory);
         }
         return instance;
     }
@@ -69,12 +68,5 @@ public class ServiceFactory {
             serviceStore = new ServiceStore(sessionFactory);
         }
         return serviceStore;
-    }
-
-    public ServiceAddress getServiceAddress() {
-        if (serviceAddress == null) {
-            serviceAddress = new ServiceAddress(sessionFactory);
-        }
-        return serviceAddress;
     }
 }

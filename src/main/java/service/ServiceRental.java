@@ -51,7 +51,7 @@ public class ServiceRental {
         try (Session session = sessionFactory.openSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                if (rental.getRentalDate() != null) {
+                if (rental.getReturnDate() != null) {
                     logger.warn("The Rental has already been returned: " + rental.getRentalDate());
                     throw new IllegalStateException("The Rental has already been returned: " + rental.getRentalDate());
                 }
@@ -94,8 +94,14 @@ public class ServiceRental {
                 }
 
                 rental.setCustomer(dbCustomer);
+                dbCustomer.addRental(rental);
+
                 rental.setInventory(dbInventory);
+                dbInventory.addRental(rental);
+
                 rental.setStaff(dbStaff);
+                dbStaff.addRental(rental);
+
                 rental.setRentalDate(LocalDateTime.now());
 
                 rentalDAO.save(rental, session);

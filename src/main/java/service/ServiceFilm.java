@@ -163,7 +163,10 @@ public class ServiceFilm {
 
 
     private void processInventory(Film film, Session session) {
-        for (Inventory inventory : new ArrayList<>(film.getInventories())) {
+        Set<Inventory> set = new HashSet<>(film.getInventories());
+        film.getInventories().clear(); // Чтоб избежать дублирования данных в DB
+
+        for (Inventory inventory : set) {
             Store store = inventory.getStore();
             Objects.requireNonNull(store, "Inventory store cannot be null");
 

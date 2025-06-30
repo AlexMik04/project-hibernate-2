@@ -6,7 +6,7 @@ import entity.film.Film;
 import entity.film.Rating;
 import entity.film_actor.FilmActor;
 import entity.film_category.FilmCategory;
-import factory.ServiceFactory;
+import factory.FactoryService;
 import service.*;
 
 import java.time.Year;
@@ -21,7 +21,7 @@ public class Main {
     private final ServiceStaff serviceStaff;
     private final ServiceInventory serviceInventory;
 
-    public Main(ServiceFactory sf) {
+    public Main(FactoryService sf) {
         Objects.requireNonNull(sf, "ServiceFactory can not be null");
 
         this.serviceRental = sf.getServiceRental();
@@ -34,14 +34,14 @@ public class Main {
 
     public static void main(String[] args) {
         try (SessionHibernateConfig config = SessionHibernateConfig.getInstance()) {
-            ServiceFactory sf = ServiceFactory.getInstance(config.getSessionFactory());
+            FactoryService sf = FactoryService.getInstance(config.getSessionFactory());
 
             Main main = new Main(sf);
 
-            main.createAndSaveCustomerToDB();
+//            main.createAndSaveCustomerToDB();
 //            main.createAndSaveFilmToDB();
 //            main.createAndSaveRentalToDB();
-//            main.customerReturnRental();
+            main.customerReturnRental();
         }
     }
 
