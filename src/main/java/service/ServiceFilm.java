@@ -4,7 +4,8 @@ import entity.*;
 import entity.film.Film;
 import entity.film_actor.FilmActor;
 import entity.film_category.FilmCategory;
-import factory.FactoryDAO;
+import factory.FactoryObjects;
+import factory.FactoryObjectsDAO;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -32,16 +33,16 @@ public class ServiceFilm {
     public ServiceFilm(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        FactoryDAO factoryDAO = FactoryDAO.getInstance();
+        FactoryObjects factoryObjectsDAO = FactoryObjectsDAO.getInstance();
 
-        this.actorDAO = factoryDAO.getActorDAO();
-        this.categoryDAO = factoryDAO.getCategoryDAO();
-        this.filmActorDAO = factoryDAO.getFilmActorDAO();
-        this.filmCategoryDAO = factoryDAO.getFilmCategoryDAO();
-        this.filmDAO = factoryDAO.getFilmDAO();
-        this.inventoryDAO = factoryDAO.getInventoryDAO();
-        this.languageDAO = factoryDAO.getLanguageDAO();
-        this.storeDAO = factoryDAO.getStoreDAO();
+        this.actorDAO = factoryObjectsDAO.getObject(ActorDAO.class);
+        this.categoryDAO = factoryObjectsDAO.getObject(CategoryDAO.class);
+        this.filmActorDAO = factoryObjectsDAO.getObject(FilmActorDAO.class);
+        this.filmCategoryDAO = factoryObjectsDAO.getObject(FilmCategoryDAO.class);
+        this.filmDAO = factoryObjectsDAO.getObject(FilmDAO.class);
+        this.inventoryDAO = factoryObjectsDAO.getObject(InventoryDAO.class);
+        this.languageDAO = factoryObjectsDAO.getObject(LanguageDAO.class);
+        this.storeDAO = factoryObjectsDAO.getObject(StoreDAO.class);
     }
 
     public Film getByIdFromDB(Integer id) {

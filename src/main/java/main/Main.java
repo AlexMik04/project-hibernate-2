@@ -6,7 +6,8 @@ import entity.film.Film;
 import entity.film.Rating;
 import entity.film_actor.FilmActor;
 import entity.film_category.FilmCategory;
-import factory.FactoryService;
+import factory.FactoryObjects;
+import factory.FactoryObjectsService;
 import service.*;
 
 import java.time.Year;
@@ -21,24 +22,24 @@ public class Main {
     private final ServiceStaff serviceStaff;
     private final ServiceInventory serviceInventory;
 
-    public Main(FactoryService sf) {
-        Objects.requireNonNull(sf, "ServiceFactory can not be null");
+    public Main(FactoryObjects factoryObjectsService) {
+        Objects.requireNonNull(factoryObjectsService, "ServiceFactory can not be null");
 
-        this.serviceRental = sf.getServiceRental();
-        this.serviceFilm = sf.getServiceFilm();
-        this.serviceStore = sf.getServiceStore();
-        this.serviceCustomer = sf.getServiceCustomer();
-        this.serviceStaff = sf.getServiceStaff();
-        this.serviceInventory = sf.getServiceInventory();
+        this.serviceRental = factoryObjectsService.getObject(ServiceRental.class);
+        this.serviceFilm = factoryObjectsService.getObject(ServiceFilm.class);
+        this.serviceStore = factoryObjectsService.getObject(ServiceStore.class);
+        this.serviceCustomer = factoryObjectsService.getObject(ServiceCustomer.class);
+        this.serviceStaff = factoryObjectsService.getObject(ServiceStaff.class);
+        this.serviceInventory = factoryObjectsService.getObject(ServiceInventory.class);
     }
 
     public static void main(String[] args) {
         try (SessionHibernateConfig config = SessionHibernateConfig.getInstance()) {
-            FactoryService sf = FactoryService.getInstance(config.getSessionFactory());
+            FactoryObjects factoryObjectsService = FactoryObjectsService.getInstance(config.getSessionFactory());
 
-            Main main = new Main(sf);
+            Main main = new Main(factoryObjectsService);
 
-//            main.createAndSaveCustomerToDB();
+            main.createAndSaveCustomerToDB();
 //            main.createAndSaveFilmToDB();
 //            main.createAndSaveRentalToDB();
 //            main.customerReturnRental();

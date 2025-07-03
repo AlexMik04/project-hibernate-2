@@ -1,7 +1,8 @@
 package service;
 
 import entity.Staff;
-import factory.FactoryDAO;
+import factory.FactoryObjects;
+import factory.FactoryObjectsDAO;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import repository.StaffDAO;
@@ -16,9 +17,9 @@ public class ServiceStaff {
     public ServiceStaff(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        FactoryDAO factoryDAO = FactoryDAO.getInstance();
+        FactoryObjects factoryObjectsDAO = FactoryObjectsDAO.getInstance();
 
-        this.staffDAO = factoryDAO.getStaffDAO();
+        this.staffDAO = factoryObjectsDAO.getObject(StaffDAO.class);
     }
 
     public Staff getByIdFromDB(Short id) {

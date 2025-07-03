@@ -1,7 +1,8 @@
 package service;
 
 import entity.*;
-import factory.FactoryDAO;
+import factory.FactoryObjects;
+import factory.FactoryObjectsDAO;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,14 +30,14 @@ public class ServiceRental {
     public ServiceRental(SessionFactory sessionFactory) {
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "SessionFactory can not be null");
 
-        FactoryDAO factoryDAO = FactoryDAO.getInstance();
+        FactoryObjects factoryObjectsDAO = FactoryObjectsDAO.getInstance();
 
-        this.customerDAO = factoryDAO.getCustomerDAO();
-        this.inventoryDAO = factoryDAO.getInventoryDAO();
-        this.paymentDAO = factoryDAO.getPaymentDAO();
-        this.rentalDAO = factoryDAO.getRentalDAO();
-        this.staffDAO = factoryDAO.getStaffDAO();
-        this.storeDAO = factoryDAO.getStoreDAO();
+        this.customerDAO = factoryObjectsDAO.getObject(CustomerDAO.class);
+        this.inventoryDAO = factoryObjectsDAO.getObject(InventoryDAO.class);
+        this.paymentDAO = factoryObjectsDAO.getObject(PaymentDAO.class);
+        this.rentalDAO = factoryObjectsDAO.getObject(RentalDAO.class);
+        this.staffDAO = factoryObjectsDAO.getObject(StaffDAO.class);
+        this.storeDAO = factoryObjectsDAO.getObject(StoreDAO.class);
     }
 
     public Rental getByIdFromDB(Integer id) {

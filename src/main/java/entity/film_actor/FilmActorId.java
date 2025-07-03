@@ -3,8 +3,6 @@ package entity.film_actor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
-import java.util.Objects;
-
 @Embeddable
 public class FilmActorId {
     @Column(name = "film_id", nullable = false, columnDefinition = "SMALLINT UNSIGNED")
@@ -14,11 +12,6 @@ public class FilmActorId {
     private Integer actorId;
 
     public FilmActorId() {}
-
-    public FilmActorId(Integer filmId, Integer actorId) {
-        this.filmId = Objects.requireNonNull(filmId, "Film_ID can not be null");
-        this.actorId = Objects.requireNonNull(actorId, "Actor_ID can not be null");
-    }
 
     public Integer getFilmId() {
         return filmId;

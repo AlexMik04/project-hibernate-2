@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Embeddable
 public class FilmCategoryId implements Serializable {
@@ -15,11 +14,6 @@ public class FilmCategoryId implements Serializable {
     private Short categoryId;
 
     public FilmCategoryId() {
-    }
-
-    public FilmCategoryId(Integer filmId, Short categoryId) {
-        this.filmId = Objects.requireNonNull(filmId, "Film_ID can not be null");
-        this.categoryId = Objects.requireNonNull(categoryId, "Category_ID can not be null");
     }
 
     public Integer getFilmId() {
