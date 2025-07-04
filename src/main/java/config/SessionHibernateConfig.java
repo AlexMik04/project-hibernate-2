@@ -56,7 +56,7 @@ public class SessionHibernateConfig implements AutoCloseable {
         return properties;
     }
 
-    public static synchronized SessionHibernateConfig getInstance() {
+    public static SessionHibernateConfig getInstance() {
         if (instance == null) {
             instance = new SessionHibernateConfig();
         }

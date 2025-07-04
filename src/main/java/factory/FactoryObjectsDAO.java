@@ -2,8 +2,6 @@ package factory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.*;
-import service.ServiceCustomer;
 
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -19,7 +17,6 @@ public class FactoryObjectsDAO implements FactoryObjects {
     private FactoryObjectsDAO() {}
 
     public static FactoryObjectsDAO getInstance() {
-
         if (instance == null) {
             instance = new FactoryObjectsDAO();
         }

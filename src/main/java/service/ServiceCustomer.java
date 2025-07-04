@@ -50,7 +50,7 @@ public class ServiceCustomer {
             try {
                 Customer dbCustomer = customerDAO.findByAddressCityCountry(customer, customer.getAddress(), session);
                 if (dbCustomer != null) {
-                    logger.error("Customer with ID '{}' already exists in DB", dbCustomer.getId());
+                    logger.warn("Customer with ID '{}' already exists in DB", dbCustomer.getId());
                     throw new IllegalStateException("Customer with ID '" + dbCustomer.getId() + "' already exists in DB");
                 }
 

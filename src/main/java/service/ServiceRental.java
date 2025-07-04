@@ -53,7 +53,7 @@ public class ServiceRental {
             Transaction transaction = session.beginTransaction();
             try {
                 if (rental.getReturnDate() != null) {
-                    logger.warn("The Rental has already been returned: " + rental.getRentalDate());
+                    logger.warn("The Rental has already been returned: {}", rental.getRentalDate());
                     throw new IllegalStateException("The Rental has already been returned: " + rental.getRentalDate());
                 }
                 rental.setReturnDate(LocalDateTime.now());

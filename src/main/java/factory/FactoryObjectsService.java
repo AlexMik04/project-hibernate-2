@@ -3,9 +3,7 @@ package factory;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.*;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +37,7 @@ public class FactoryObjectsService implements FactoryObjects {
 
         return (T) serviceCache.computeIfAbsent(type, cls -> {
             try {
-                Constructor<?> constructor = cls.getConstructor(SessionFactory.class);
-                return constructor.newInstance(sessionFactory);
+                return cls.getConstructor(SessionFactory.class).newInstance(sessionFactory);
             } catch (Exception e) {
                 logger.error("Failed to create service: {}", cls.getSimpleName());
                 throw new IllegalStateException("Failed to create service: " + cls.getSimpleName(), e);
